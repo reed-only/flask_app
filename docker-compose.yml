@@ -1,0 +1,14 @@
+version: "3.3"
+
+services:
+  flask-app:
+    container_name: flask-app
+    image: reedonly/flask-app:latest
+    environment:
+      - FLASK_APP=/opt/flask_app/flask_app/__init__.py
+      - FLASK_DEBUG=1
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/opt/flask_app
+    command: bash -c "flask db upgrade && flask run --host=0.0.0.0"

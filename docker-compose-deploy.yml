@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  flask-app:
+    container_name: flask-app
+    image: reedonly/flask-app:latest
+    restart: always
+    command: gunicorn --bind 0.0.0.0:8000 flask_app:app
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.13.7
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    depends_on:
+      - flask-app
+    restart: always

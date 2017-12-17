@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Build a flask-app container, start it, and enter a bash session
+#
+# Optionally, pass build argument to build locally, or pull to pull from Docker Cloud
+#
+# Usage:
+#  ./launch
+#  ./launch build
+#  ./launch pull
+
+if [ "$(docker ps -q -f name=flask-app)" ]; then
+    docker stop flask-app
+fi
+
+if [ "$1" == "build" ]; then
+    docker build --no-cache --force-rm . --label flask-app --tag reedonly/flask-app:latest
+elif [ "$1" == "build" ]; then
+    docker pull reedonly/flask-app:latest
+fi
+
+docker-compose up -d
+
+docker exec -ti flask-app bash

@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Deploy flask app to AWS EC2 Ubuntu instance using docker
+#
+# Usage:
+#   export DOCKER_USERNAME=username
+#   export DOCKER_PASSWORD=password
+#   export KEY_FILE_PATH=/path/to/key/file
+#   export EC2_HOST=ec2-xx-xxx-xxx-xxx.us-west-1.compute.amazonaws.com
+#   ./deploy
+
+# Build the flask-app image
+docker build --no-cache --force-rm . --label flask-app --tag reedonly/flask-app:latest
+
+# Ship to docker cloud
+docker push reedonly/flask-app:latest
+
+# Log in to docker
+ssh -i ${KEY_FILE_PATH} ubuntu@${EC2_HOST} "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+
+# Clean up the environment
+ssh -i ${KEY_FILE_PATH} ubuntu@${EC2_HOST} "\
+    docker stop nginx || echo "Container nginx does not exist" && \
+    docker stop flask-app || echo "Container flask-app does not exist" && \
+    docker system prune -af
+"
+
+# Ship deploy files to EC2 instance
+scp -i ${KEY_FILE_PATH} docker-compose-deploy.yml nginx.conf ubuntu@${EC2_HOST}:/home/ubuntu
+
+# Pull the image from docker cloud
+docker pull reedonly/flask-app:latest
+
+# Start it up
+ssh -i ${KEY_FILE_PATH} ubuntu@${EC2_HOST} "docker-compose -f docker-compose-deploy.yml up -d"
