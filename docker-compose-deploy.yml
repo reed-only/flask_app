@@ -1,9 +1,21 @@
 version: "3.3"
 
 services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=flask_app
+      - MYSQL_USER=flask_user
+      - MYSQL_PASSWORD=flask_password
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    restart: always
+
   flask-app:
     container_name: flask-app
     image: reedonly/flask-app:latest
+    depends_on:
+      - mysql
     restart: always
     command: gunicorn --bind 0.0.0.0:8000 flask_app:app
 

@@ -1,13 +1,13 @@
 # Flask App
 
-A lightweight Flask app using SQLite and deployable to AWS EC2
+A lightweight Flask app using MySQL and deployable to AWS EC2
 
 See also: [reed/flask-app](https://cloud.docker.com/swarm/reedonly/repository/docker/reedonly/flask-app/general) on Docker Cloud
 
 ## Run API Server Locally in Docker
 
 ```bash
-./launch build
+./launch
 ```
 
 ## Make a Request
