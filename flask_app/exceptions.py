@@ -21,6 +21,15 @@ class ApiError(Exception):
                                                                         self.message)
 
 
+class NotFound(ApiError):
+    """
+    Not found exception
+    """
+    def __init__(self, obj_id):
+        message = 'id: {} not found'.format(obj_id)
+        super().__init__(message, status_code=404)
+
+
 class BadRequest(ApiError):
     """
     Bad request exception

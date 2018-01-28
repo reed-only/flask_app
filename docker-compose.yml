@@ -26,4 +26,4 @@ services:
       - ./config/.my.cnf:/home/flaskuser/.my.cnf
       - .:/opt/flask_app
     user: flaskuser
-    command: bash -c "flask db upgrade && flask run --host=0.0.0.0"
+    command: bash -c "./wait_for_mysql.sh && flask db upgrade && flask run --host=0.0.0.0"

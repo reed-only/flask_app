@@ -1,10 +1,11 @@
 """
 Bananas API
 """
-from flask import jsonify, abort
+from flask import jsonify
 
 from flask_app.extensions import app
 from flask_app.models import Bananas
+from flask_app.exceptions import NotFound
 
 
 @app.route('/bananas', methods=['GET'])
@@ -31,7 +32,7 @@ def get_banana(banana_id):
     """
     banana_record = Bananas.query.get(banana_id)
     if not banana_record:
-        abort(404)
+        raise NotFound(banana_id)
     banana = {
         'id': banana_record.id,
         'name': banana_record.name,
